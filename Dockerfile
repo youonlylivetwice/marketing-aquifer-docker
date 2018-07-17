@@ -62,6 +62,7 @@ RUN apt-get install -y \
   sudo \
   snmp \
   vim \
+  git \
   iputils-ping \
   apache2 \
   libapache2-mod-php7.0
