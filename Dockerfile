@@ -61,6 +61,7 @@ RUN apt-get install -y \
   curl \
   sudo \
   snmp \
+  vim \
   iputils-ping \
   apache2 \
   libapache2-mod-php7.0
@@ -100,9 +101,23 @@ RUN source $NVM_DIR/nvm.sh \
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/v$NODE_VERSION/bin:$PATH
 
+# Setup apache
+RUN sudo mkdir /root/marketing-aquifer
+RUN sudo mkdir /root/marketing-aquifer/build
+COPY ./config/default-apache-page.html /root/marketing-aquifer/build/
+RUN sudo mv /root/marketing-aquifer/build/default-apache-page.html /root/marketing-aquifer/build/index.html
+RUN sudo chown -R www-data:www-data /root/marketing-aquifer/build
+RUN sudo chmod -R g+rwX /root/marketing-aquifer/build
+COPY ./config/marketing-aquifer.conf /etc/apache2/sites-available/
+RUN sudo a2ensite marketing-aquifer
+RUN sudo a2enmod rewrite
+
 CMD ["service", "php7-fpm", "start"]
 CMD ["service", "apache2", "start"]
 CMD ["mysqld_safe"]
+
+# Remove the marketing-aquifer directory so that circleci doesn't die.
+RUN rm -R /root/marketing-aquifer
 
 EXPOSE 8080
 EXPOSE 3306
