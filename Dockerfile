@@ -53,6 +53,9 @@ RUN apt-get install -y \
   php7.0-tidy \
   php7.0-xmlrpc \
   php7.0-xsl \
+  php7.0-phar \
+  php7.0-mbstring \
+  php7.0-zip \
   unzip \
   wget \
   curl \
@@ -61,6 +64,13 @@ RUN apt-get install -y \
   iputils-ping \
   apache2 \
   libapache2-mod-php7.0
+
+# Install Composer.
+RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
+
+# Install Drush.
+RUN sudo composer global require drush/drush:8.1.2
+ENV PATH="/root/.composer/vendor/bin:${PATH}"
 
 # Install MariaDB.
 RUN \
