@@ -112,6 +112,7 @@ RUN sudo chmod -R g+rwX /root/marketing-aquifer/build
 COPY ./config/marketing-aquifer.conf /etc/apache2/sites-available/
 RUN sudo a2ensite marketing-aquifer
 RUN sudo a2enmod rewrite
+run chmod +rx /root
 
 CMD ["service", "php7-fpm", "start"]
 CMD ["service", "apache2", "start"]
