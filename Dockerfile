@@ -90,14 +90,14 @@ RUN \
   apt-get clean all
 
 # Install NVM, Node, and NPM.
-RUN mkdir /usr/local/nvm
+RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.20.0/install.sh | bash
 RUN mkdir /usr/local/nvm/bin
 RUN mkdir /usr/local/nvm/versions
-RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.20.0/install.sh | bash
 RUN source $NVM_DIR/nvm.sh \
     && nvm install $NODE_VERSION \
     && nvm alias default $NODE_VERSION \
-    && nvm use default
+    && nvm use default \
+    && npm install -g aquifer gulp
 
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/v$NODE_VERSION/bin:$PATH
