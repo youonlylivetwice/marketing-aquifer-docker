@@ -93,26 +93,32 @@ RUN \
 RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.20.0/install.sh | bash
 RUN mkdir /usr/local/nvm/bin
 RUN mkdir /usr/local/nvm/versions
-RUN source $NVM_DIR/nvm.sh \
-    && nvm install $NODE_VERSION \
-    && nvm alias default $NODE_VERSION \
-    && nvm use default \
-    && npm install -g aquifer gulp
+RUN source $NVM_DIR/nvm.sh && \
+    sudo chown -R root:root /usr/local/nvm && \
+    nvm install $NODE_VERSION && \
+    nvm alias default $NODE_VERSION && \
+    nvm use default && \
+    npm install -g aquifer gulp && \
+    sudo chown -R root:root /root
 
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/v$NODE_VERSION/bin:$PATH
 
 # Setup apache
-RUN sudo mkdir /root/marketing-aquifer
-RUN sudo mkdir /root/marketing-aquifer/build
-COPY ./config/default-apache-page.html /root/marketing-aquifer/build/
-RUN sudo mv /root/marketing-aquifer/build/default-apache-page.html /root/marketing-aquifer/build/index.html
-RUN sudo chown -R www-data:www-data /root/marketing-aquifer/build
-RUN sudo chmod -R g+rwX /root/marketing-aquifer/build
+RUN \
+  sudo mkdir /root/marketing-aquifer && \
+  sudo mkdir /root/marketing-aquifer/build
+COPY ./config/default-apache-page.html /root/marketing-aquifer/build
+RUN \
+  sudo mv /root/marketing-aquifer/build/default-apache-page.html /root/marketing-aquifer/build/index.html && \
+  sudo chown -R www-data:www-data /root/marketing-aquifer/build && \
+  sudo chmod -R g+rwX /root/marketing-aquifer/build && \
+  sudo chown -R root:root /root
 COPY ./config/marketing-aquifer.conf /etc/apache2/sites-available/
-RUN sudo a2ensite marketing-aquifer
-RUN sudo a2enmod rewrite
-run chmod +rx /root
+RUN \
+  sudo a2ensite marketing-aquifer && \
+  sudo a2enmod rewrite && \
+  sudo chown -R root:root /root
 
 CMD ["service", "php7-fpm", "start"]
 CMD ["service", "apache2", "start"]
