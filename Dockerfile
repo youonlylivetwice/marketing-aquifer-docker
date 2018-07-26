@@ -100,6 +100,12 @@ RUN chown -R www-data:www-data /root/marketing-aquifer/build && \
   a2ensite marketing-aquifer && \
   rm -R /root/marketing-aquifer
 
+# Set up Mysql.
+RUN sudo service mysql start && \
+  mysql -e "CREATE DATABASE IF NOT EXISTS circle_test" && \
+  mysql -e "CREATE USER 'ubuntu'@'localhost'"
+
+
 COPY init.sh /usr/sbin
 RUN chmod +x /usr/sbin/init.sh
 
