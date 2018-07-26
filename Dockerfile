@@ -103,7 +103,8 @@ RUN chown -R www-data:www-data /root/marketing-aquifer/build && \
 # Set up Mysql.
 RUN sudo service mysql start && \
   mysql -e "CREATE DATABASE IF NOT EXISTS circle_test" && \
-  mysql -e "CREATE USER 'ubuntu'@'localhost'"
+  mysql -e "CREATE USER 'ubuntu'@'localhost'" && \
+  mysql -e "GRANT ALL PRIVILEGES ON circle_test.* TO 'ubuntu'@'localhost'"
 
 
 COPY init.sh /usr/sbin
